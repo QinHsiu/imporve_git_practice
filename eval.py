@@ -85,7 +85,8 @@ class QuestionDatasetEvaluator:
         return new_match_dic
             
 
-    def load_dataset(self, id):
+    def load_dataset(self, id,add_by_qxy=None):
+        print(add_by_qxy)
         if not id in self._id2info:
             print ("cannot find id: {}".format(id))
             sys.exit(1)
