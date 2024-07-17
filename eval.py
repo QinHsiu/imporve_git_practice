@@ -85,14 +85,49 @@ class QuestionDatasetEvaluator:
         return new_match_dic
             
 
+
     def load_dataset(self, id):
-        eval_info={
-            "id":id,
-            'info':self._id2evalinfo[id],
-            "clean_weight":self._id2info[id]["clean_weight"],
-            "ori_weight":self._id2info[id]["ori_weight"],
-            "v4_2_match":self._id2info[id]["v4_2_match"],
-        }
+        eval_info={}
+        # eval_info={
+        #     "id":id,
+        #     'info':self._id2evalinfo[id],
+        #     "clean_weight":self._id2info[id]["clean_weight"],
+        #     "ori_weight":self._id2info[id]["ori_weight"],
+        #     "v4_2_match":self._id2info[id]["v4_2_match"],
+        # }
+    # def load_dataset(self, id,add_by_qxy=None):
+    #     print(add_by_qxy)
+        if not id in self._id2info:
+            print ("cannot find id: {}".format(id))
+            sys.exit(1)
+        eval_info = dict()
+        # Get ori question id(All questions of a source, usually count is 300)
+        ori_data = self.load_jsonl(self._id2info[id]["ori_file"])
+        eval_info["ori_data"] = ori_data
+        eval_info["ori_question_idset"] = set(ori_data.keys())
+
+        # Get clean question id(filt problem questions)
+        clean_data = self.load_jsonl(self._id2info[id]["clean_file"])
+        eval_info["clean_data"] = clean_data
+        eval_info["clean_question_idset"] = set(clean_data.keys())
+
+        # Get match result(the count should be equal to clean questions)
+        match_data = self.load_jsonl(self._id2info[id]["match_file"])
+        assert (len(eval_info["clean_data"]) == len(match_data))
+        
+        # Load new match file
+        match_data=self.load_new_match_file()
+        match_data=match_data[id]
+        
+        eval_info["match_data"] = match_data
+        eval_info["match_question_idset"]=set([q_id for q_id,v in match_data.items() if v["human_match"]=="Y"] )
+        
+        match_res = dict()
+        for q_id in match_data.keys():
+            match_res[q_id]=match_data[q_id]["human_match"]
+            # match_res[q_id] = match_data[q_id]["v4.2_match"]
+        eval_info["match_res"] = match_res
+# >>>>>>> d1da36b... modify load_dataset function to add add_by_qxy
         return eval_info
 
     def calc_err_rate(self, err_count, all_count, is_show=True):
