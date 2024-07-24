@@ -8,6 +8,7 @@ import pandas as pd
 ##add
 
 ##add2
+#addtest
 class QuestionDatasetEvaluator:
     def __init__(self):
         self._id2info = {"level1_source2_id_qita": {"clean_count":7497461, "ori_count": 7497461, "match_file": "3800w_testdata/match/level1_source2_id_qita_vegas_1100_300-10-1_clean_prompt_match.jsonl", "clean_file": "3800w_testdata/vegas_out_clean/level1_source2_id_qita_vegas_1100_300-10-1_clean.jsonl", "ori_file": "3800w_testdata/vegas_out_tpp_29_300/level1_source2_id_qita_vegas_1100_300-10-1_vegasOUT.jsonl"}}
